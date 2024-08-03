@@ -14,5 +14,5 @@ Airport Manager is a comprehensive terminal-based client designed to meet all yo
 You can install Airport Manager using pip:
 
 ```sh
-pip install airport_manager
+pip install airport-manager
 ```

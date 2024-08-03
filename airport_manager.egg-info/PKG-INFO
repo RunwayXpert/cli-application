@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: airport-manager
-Version: 0.0.5
+Version: 0.0.6
 Summary: Airport Manager: One-stop shop for all airport management needs.
 Home-page: https://github.com/itsjustshubh/airport_manager
 Author: Shubh Thorat
@@ -31,5 +31,5 @@ Airport Manager is a comprehensive terminal-based client designed to meet all yo
 You can install Airport Manager using pip:
 
 ```sh
-pip install airport_manager
+pip install airport-manager
 ```
