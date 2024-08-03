@@ -1,53 +1,18 @@
-# PyPI Publisher Template
+# Airport Manager
 
-This repository is a template for publishing Python packages to PyPI and TestPyPI using GitHub Actions and shell scripts.
+Airport Manager is a comprehensive terminal-based client designed to meet all your airport management needs. It provides various functionalities such as retrieving API tokens, fetching airport coordinates, finding areas by coordinates, and more.
 
-## Setup
+## Features
 
-1. **Clone the repository**:
+- **Get API Token**: Retrieve the API token for a given airport code.
+- **Get Airport Coordinates**: Fetch the coordinates for a specified airport.
+- **Find Area by Coordinates**: Identify the area within the airport for given coordinates.
+- **Find Areas for Coordinates**: Find multiple areas based on a list of coordinates.
 
-   ```sh
-   git clone https://github.com/yourusername/pypi-publisher-template.git
-   cd pypi-publisher-template
-   ```
+## Installation
 
-2. **Run the setup script**:
-
-   ```sh
-   ./setup.sh
-   ```
-
-3. **Update your .env file** with your PyPI and TestPyPI tokens:
-
-   ```env
-   TEST_PYPI_API_TOKEN=your_test_pypi_token_here
-   PYPI_API_TOKEN=your_pypi_token_here
-
-   BASE_URL=your_base_url_here
-   ```
-
-## Publishing
-
-### To TestPyPI
-
-Run the following command to publish to TestPyPI:
+You can install Airport Manager using pip:
 
 ```sh
-./publish_test.sh
+pip install airport_manager
 ```
-
-### To PyPI
-
-Run the following command to publish to PyPI:
-
-```sh
-./publish_pypi.sh
-```
-
-## Workflow
-
-The GitHub Actions workflow is configured to publish to PyPI on tag creation and push to the main branch. Make sure to configure your repository secrets with the required tokens.
-
-## License
-
-This project is licensed under the MIT License.
