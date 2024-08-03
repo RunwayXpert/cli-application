@@ -28,8 +28,8 @@ python setup.py sdist bdist_wheel
 
 # Commit the changes and push to GitHub
 git add .
-git tag -a "v$new_version" -m "Release version $new_version"
 git commit -m "Publish version to $new_version"
+git tag -a "v$new_version" -m "Release version $new_version"
 git push origin "v$new_version"
 
 echo "Published version $new_version to PyPI and updated GitHub."
