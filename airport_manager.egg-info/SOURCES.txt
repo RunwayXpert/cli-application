@@ -22,3 +22,6 @@ airport_manager/fa24/routes.py
 airport_manager/fr24/__init__.py
 airport_manager/fr24/menu.py
 airport_manager/fr24/routes.py
+animations/__init__.py
+animations/end_animation.py
+animations/welcome_animation.py
