@@ -7,7 +7,7 @@ from rich import box
 from rich.prompt import Prompt
 from airport_manager.database.routes import get_airport_coords, find_area, find_areas_for_coordinates
 from airport_manager.utils import print_data
-from config import get_token
+from airport_manager.config import get_token
 
 console = Console()
 

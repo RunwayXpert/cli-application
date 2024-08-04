@@ -1,11 +1,9 @@
 import requests
 from rich.console import Console
 from rich.panel import Panel
+from airport_manager.config import BASE_URL
 
 console = Console()
-
-# Replace this with your Fly.io server URL
-BASE_URL = "https://your-fly-io-server-url"
 
 
 def handle_response(response):
@@ -54,6 +52,21 @@ def find_areas_for_coordinates(coords, token):
     try:
         response = requests.post(f"{BASE_URL}/database/find-areas-for-coordinates", json={
                                  "coords": coords}, headers={"api-token": token})
+    except requests.ConnectionError as conn_err:
+        console.print(Panel(f"Connection error occurred: {
+                      conn_err}", style="bold red"))
+        response = None
+
+    if response is not None:
+        return handle_response(response)
+    else:
+        return None
+
+
+def check_token_validity(token):
+    try:
+        response = requests.get(
+            f"{BASE_URL}/database/check-token-validity/{token}")
     except requests.ConnectionError as conn_err:
         console.print(Panel(f"Connection error occurred: {
                       conn_err}", style="bold red"))

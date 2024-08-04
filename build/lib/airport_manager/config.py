@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 ENV = os.getenv('ENV', 'production')
-BASE_URL = "https://airport-manager.fly.dev/"
+BASE_URL = "http://127.0.0.1:8000/"
 
 # config.py
 api_token = None
