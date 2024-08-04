@@ -25,7 +25,7 @@ def validate_token():
                 Panel("Token validated successfully!", style="bold green"))
             break
         else:
-            console.print(Panel(f"Token validation failed: {response.get('message', 'Unknown error')}", style="bold red"))
+            console.print(Panel(f"Token validation failed", style="bold red"))
 
 
 @click.group()
