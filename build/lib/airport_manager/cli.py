@@ -12,12 +12,9 @@ from airport_manager.auth.menu import display_auth_menu, handle_auth_menu
 from airport_manager.database.menu import display_database_menu, handle_database_menu
 from airport_manager.fr24.menu import display_fr24_menu, handle_fr24_menu
 from airport_manager.fa24.menu import display_fa24_menu, handle_fa24_menu
+from airport_manager.config import set_token, get_token
 
 console = Console()
-
-
-def get_token():
-    return 'fixed-token'
 
 
 def display_main_menu(console: Console):
@@ -43,6 +40,10 @@ def display_main_menu(console: Console):
 def cli():
     console.clear()
     welcome_animation()
+    # Prompt the user for the API token and store it in the configuration module
+    api_token = Prompt.ask("Please enter your API token",
+                           default="your-default-token")
+    set_token(api_token)
 
 
 @click.command()

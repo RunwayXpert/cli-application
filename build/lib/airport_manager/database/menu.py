@@ -7,6 +7,7 @@ from rich import box
 from rich.prompt import Prompt
 from airport_manager.database.routes import get_airport_coords, find_area, find_areas_for_coordinates
 from airport_manager.utils import print_data
+from airport_manager.config import get_token
 
 console = Console()
 
@@ -33,11 +34,12 @@ def display_database_menu(console: Console):
 def handle_database_menu(choice, raw):
     console.clear()
     data = None
+    token = get_token()  # Get the API token
     if choice == "1":
         console.print(
             Panel("Retrieve the coordinates for a specified airport code.", style="green"))
         airport_code = Prompt.ask("Enter airport code", default="BOM")
-        data = get_airport_coords(airport_code)
+        data = get_airport_coords(airport_code, token)
     elif choice == "2":
         console.print(Panel(
             "Find the area for given latitude and longitude coordinates.", style="green"))
@@ -46,7 +48,7 @@ def handle_database_menu(choice, raw):
         try:
             lat = float(lat)
             lon = float(lon)
-            data = find_area(lat, lon)
+            data = find_area(lat, lon, token)
         except ValueError:
             console.print(
                 "[red]Invalid input. Please enter valid numbers for latitude and longitude.[/red]")
@@ -66,7 +68,7 @@ def handle_database_menu(choice, raw):
                 console.print(
                     "[red]Invalid input for coordinates. Please enter a valid list of dicts.[/red]")
                 coords = None
-        data = find_areas_for_coordinates(coords)
+        data = find_areas_for_coordinates(coords, token)
 
     console.clear()
     print_data(data)

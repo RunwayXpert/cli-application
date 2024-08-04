@@ -1,16 +1,11 @@
 import requests
 from rich.console import Console
-from airport_manager.config import BASE_URL
+from rich.panel import Panel
 
 console = Console()
 
-
-def extract_timestamp(response):
-    try:
-        error_data = response.json()
-        return error_data.get('timestamp', '')
-    except ValueError:
-        return ''
+# Replace this with your Fly.io server URL
+BASE_URL = "https://your-fly-io-server-url"
 
 
 def handle_response(response):
@@ -18,45 +13,53 @@ def handle_response(response):
         response.raise_for_status()
         return response.json()
     except requests.HTTPError as http_err:
-        timestamp = extract_timestamp(response)
-        return {"status": "unsuccess", "message": str(http_err), "timestamp": timestamp}
+        console.print(Panel(f"HTTP error occurred: {
+                      http_err}", style="bold red"))
     except Exception as err:
-        return {"status": "unsuccess", "message": str(err), "timestamp": ""}
+        console.print(Panel(f"Other error occurred: {err}", style="bold red"))
+    return None
 
 
-def get_airport_coords(airport_code):
+def get_airport_coords(airport_code, token):
     try:
         response = requests.get(
-            f'{BASE_URL}/database/airport-coords/{airport_code}')
-        console.print(f"[green]Coordinates fetched successfully for airport code: {
-                      airport_code}[/green]")
+            f"{BASE_URL}/database/airport-coords/{airport_code}", headers={"api-token": token})
+    except requests.ConnectionError as conn_err:
+        console.print(Panel(f"Connection error occurred: {
+                      conn_err}", style="bold red"))
+        response = None
+
+    if response is not None:
         return handle_response(response)
-    except Exception as err:
-        console.print(f"[red]Failed to fetch coordinates for airport code: {
-                      airport_code}[/red]")
-        return handle_response(response)
+    else:
+        return None
 
 
-def find_area(lat, lon):
+def find_area(lat, lon, token):
     try:
-        response = requests.get(f'{BASE_URL}/database/find-area/{lat}/{lon}')
-        console.print(
-            f"[green]Area found successfully for coordinates: ({lat}, {lon})[/green]")
+        response = requests.get(
+            f"{BASE_URL}/database/find-area/{lat}/{lon}", headers={"api-token": token})
+    except requests.ConnectionError as conn_err:
+        console.print(Panel(f"Connection error occurred: {
+                      conn_err}", style="bold red"))
+        response = None
+
+    if response is not None:
         return handle_response(response)
-    except Exception as err:
-        console.print(
-            f"[red]Failed to find area for coordinates: ({lat}, {lon})[/red]")
-        return handle_response(response)
+    else:
+        return None
 
 
-def find_areas_for_coordinates(coordinates):
+def find_areas_for_coordinates(coords, token):
     try:
-        response = requests.post(
-            f'{BASE_URL}/database/find-areas-for-coordinates', json={'coords': coordinates})
-        console.print(
-            f"[green]Areas found successfully for provided coordinates[/green]")
+        response = requests.post(f"{BASE_URL}/database/find-areas-for-coordinates", json={
+                                 "coords": coords}, headers={"api-token": token})
+    except requests.ConnectionError as conn_err:
+        console.print(Panel(f"Connection error occurred: {
+                      conn_err}", style="bold red"))
+        response = None
+
+    if response is not None:
         return handle_response(response)
-    except Exception as err:
-        console.print(
-            f"[red]Failed to find areas for provided coordinates[/red]")
-        return handle_response(response)
+    else:
+        return None
