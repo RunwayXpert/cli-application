@@ -80,7 +80,6 @@ def print_data(data):
     else:
         console.print("[red]No data to display.[/red]")
 
-
 def show_progress(task_description: str, messages: Optional[List[str]] = None):
     if messages is None:
         messages = FACTS
@@ -95,6 +94,6 @@ def show_progress(task_description: str, messages: Optional[List[str]] = None):
         )
         for message in messages:
             progress.update(task, message=message)
-            time.sleep(0.2)  # Simulate loading time
+            time.sleep(1)  # Simulate loading time
             yield
         progress.stop()
