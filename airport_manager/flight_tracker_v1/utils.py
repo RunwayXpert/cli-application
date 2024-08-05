@@ -334,3 +334,76 @@ def print_flight_data(data, data_type: str):
             if choice.lower() == 'q':
                 break
 
+
+def format_datetime(timestamp):
+    if timestamp:
+        return datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+    return "N/A"
+
+def print_flight_playback(data):
+    flight = data.get("flight", {})
+    
+    if not flight:
+        console.print(Panel("No flight data available.", style="bold red"))
+        return
+
+    identification = flight.get("identification", {})
+    model = flight.get("model", {})
+    status = flight.get("status", {})
+    airline = flight.get("airline", {})
+    airport = flight.get("airport", {})
+    track = flight.get("track", [])
+
+    flight_info_table = Table(box=box.MINIMAL)
+    flight_info_table.add_column("Field", style="bold magenta")
+    flight_info_table.add_column("Value", style="bold cyan")
+
+    flight_info_table.add_row("Flight ID", identification.get("id", "N/A"))
+    flight_info_table.add_row("Callsign", identification.get("callsign", "N/A"))
+    flight_info_table.add_row("Aircraft Model", model.get("text", "N/A"))
+    flight_info_table.add_row("Status", status.get("text", "N/A"))
+    flight_info_table.add_row("Live", str(status.get("live", "N/A")))
+    flight_info_table.add_row("Airline", airline.get("name", "N/A"))
+
+    origin = airport.get("origin", {})
+    destination = airport.get("destination", {})
+    flight_info_table.add_row("Origin Airport", origin.get("name", "N/A"))
+    flight_info_table.add_row("Origin IATA", origin.get("code", {}).get("iata", "N/A"))
+    flight_info_table.add_row("Destination Airport", destination.get("name", "N/A"))
+    flight_info_table.add_row("Destination IATA", destination.get("code", {}).get("iata", "N/A"))
+
+    batch_size = 10
+    start_index = 0
+    total_tracks = len(track)
+
+    while start_index < total_tracks:
+        track_table = Table(box=box.MINIMAL)
+        track_table.add_column("Timestamp", style="bold blue")
+        track_table.add_column("Latitude", style="bold cyan")
+        track_table.add_column("Longitude", style="bold cyan")
+        track_table.add_column("Altitude (ft)", style="bold magenta")
+        track_table.add_column("Speed (kmh)", style="bold yellow")
+        track_table.add_column("Heading", style="bold red")
+
+        end_index = start_index + batch_size
+        for entry in track[start_index:end_index]:
+            track_table.add_row(
+                format_datetime(entry.get("timestamp")),
+                str(entry.get("latitude", "N/A")),
+                str(entry.get("longitude", "N/A")),
+                str(entry.get("altitude", {}).get("feet", "N/A")),
+                str(entry.get("speed", {}).get("kmh", "N/A")),
+                str(entry.get("heading", "N/A"))
+            )
+
+        clear_console()
+        console.print(Panel(flight_info_table, title="Flight Information", title_align="left", style="bold green"))
+        console.print(Panel(track_table, title=f"Flight Track Data (Showing {start_index + 1}-{min(end_index, total_tracks)} of {total_tracks})", title_align="left", style="bold green"))
+        
+        start_index += batch_size
+        if start_index < total_tracks:
+            choice = input("Press Enter to continue or type 'q' to quit: ")
+            if choice.lower() == 'q':
+                break
+
+

@@ -12,7 +12,7 @@ def flight_tracker_v1_menu(ctx):
     while True:
         clear_console()
         display_flight_tracker_v1_menu(console)
-        choice = Prompt.ask("Select an option", choices=["1", "2", "3", "4", "5", "6", "7"])
-        if choice == "7":
+        choice = Prompt.ask("Select an option", choices=["1", "2", "3", "4", "5", "6", "7", "8"])
+        if choice == "8":
             break
         handle_flight_tracker_v1_menu(choice)

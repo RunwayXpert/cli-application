@@ -6,7 +6,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich import box
 from airport_manager.flight_tracker_v1.routes import get_data_from_api
-from airport_manager.flight_tracker_v1.utils import print_flight_tracker_data, print_weather_data, print_flight_info, print_flight_data
+from airport_manager.flight_tracker_v1.utils import print_flight_tracker_data, print_weather_data, print_flight_info, print_flight_data, print_flight_playback
 from airport_manager.utils import handle_response, print_success_panel, clear_console
 
 console = Console()
@@ -21,7 +21,8 @@ def display_flight_tracker_v1_menu(console: Console):
         ("[4] Arrivals", "4"),
         ("[5] Ground Operations", "5"),
         ("[6] Flight by Tail Number", "6"),
-        ("[7] Back to Main Menu", "7")
+        ("[7] Flight Playback", "7"),
+        ("[8] Back to Main Menu", "8")
     ]
 
     table = Table(box=box.SIMPLE, show_header=False, highlight=True)
@@ -38,8 +39,8 @@ def flight_tracker_v1_menu(ctx):
         clear_console()
         display_flight_tracker_v1_menu(console)
         choice = Prompt.ask("Select an option", choices=[
-                            "1", "2", "3", "4", "5", "6", "7"], default="1")
-        if choice == "7":
+                            "1", "2", "3", "4", "5", "6", "7", "8"], default="1")
+        if choice == "8":
             return
         handle_flight_tracker_v1_menu(choice)
 
@@ -82,5 +83,11 @@ def handle_flight_tracker_v1_menu(choice):
             print_flight_info(data)
             print_success_panel(data.get("status"), data.get("timestamp"))
     elif choice == "7":
+        flight_id = Prompt.ask("Enter flight ID for playback", default="367db194")
+        data = get_data_from_api(f"playback/{flight_id}")
+        if handle_response(data):
+            print_flight_playback(data)  # Replace this with the appropriate function to print playback data
+            print_success_panel(data.get("status"), data.get("timestamp"))
+    elif choice == "8":
         return
     Prompt.ask("Press Enter to return to the Flight Tracker v1 menu...")
