@@ -5,7 +5,6 @@ from rich.text import Text
 from rich.panel import Panel
 from rich.table import Table
 from rich import box
-from airport_manager.auth.main_menu import auth_menu
 from airport_manager.database.main_menu import database_menu
 from airport_manager.flight_tracker_v1.main_menu import flight_tracker_v1_menu
 from airport_manager.fa24.main_menu import fa24_menu
@@ -17,7 +16,6 @@ console = Console()
 def display_main_menu(console: Console):
     header = Text("Main Menu", justify="center", style="bold blue")
     menu_options = [
-        ("[A] Auth Menu", "A"),
         ("[D] Database Menu", "D"),
         ("[R] Flight Tracker v1 Menu", "R"),
         ("[F] FA24 Menu", "F"),
@@ -36,13 +34,11 @@ def main_menu(ctx):
         clear_console()
         display_main_menu(console)
         choice = Prompt.ask("Select an option", choices=[
-                            "A", "D", "R", "F", "5"], default="A")
+                            "D", "R", "F", "5"], default="D")
         if choice == "5":
             clear_console()
             end_animation()
             break
-        if choice == "A":
-            ctx.invoke(auth_menu)
         elif choice == "D":
             ctx.invoke(database_menu)
         elif choice == "F":

@@ -1,14 +1,11 @@
-import sys
 import click
 from rich.panel import Panel
 from rich.console import Console
 from animations.welcome_animation import welcome_animation
-from animations.end_animation import end_animation
 from animations.banner import display_banner
-from airport_manager.config import set_token, get_token
+from airport_manager.config import set_token
 from airport_manager.database.routes import check_token_validity
 from airport_manager.main_menu import main_menu
-from airport_manager.auth.main_menu import auth_menu
 from airport_manager.database.main_menu import database_menu
 from airport_manager.flight_tracker_v1.main_menu import flight_tracker_v1_menu
 from airport_manager.fa24.main_menu import fa24_menu
@@ -36,7 +33,6 @@ def cli():
     validate_token()
 
 cli.add_command(main_menu)
-cli.add_command(auth_menu)
 cli.add_command(database_menu)
 cli.add_command(flight_tracker_v1_menu)
 cli.add_command(fa24_menu)

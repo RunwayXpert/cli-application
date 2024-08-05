@@ -5,6 +5,7 @@ from rich.table import Table
 from rich.text import Text
 from rich import box
 from rich.prompt import Prompt
+from airport_manager.utils import clear_console
 from airport_manager.auth.routes import authenticate
 
 console = Console()
@@ -28,7 +29,7 @@ def display_auth_menu(console: Console):
 
 
 def handle_auth_menu(choice):
-    console.clear()
+    clear_console()
     if choice == "1":
         username = Prompt.ask("Enter username")
         password = Prompt.ask("Enter password", password=True)

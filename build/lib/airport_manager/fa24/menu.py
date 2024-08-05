@@ -4,6 +4,7 @@ from rich.table import Table
 from rich.text import Text
 from rich import box
 from rich.prompt import Prompt
+from airport_manager.utils import clear_console
 
 console = Console()
 
@@ -26,7 +27,7 @@ def display_fa24_menu(console: Console):
 
 
 def handle_fa24_menu(choice):
-    console.clear()
+    clear_console()
     if choice == "1":
         # Handle FA24 Option 1
         console.print("[cyan]FA24 Option 1 selected.[/cyan]")
