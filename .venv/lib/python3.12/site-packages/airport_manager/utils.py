@@ -25,6 +25,8 @@ def clear_console():
 
 
 def handle_response(response):
+    clear_console()  # Clear the console right after the progress stops
+    
     status = response.get("status", "unsuccess")
     timestamp = response.get("timestamp", "")
     message = response.get("message", "Unknown error")
@@ -80,7 +82,6 @@ def print_data(data):
     else:
         console.print("[red]No data to display.[/red]")
 
-
 def show_progress(task_description: str, messages: Optional[List[str]] = None):
     if messages is None:
         messages = FACTS
@@ -98,3 +99,4 @@ def show_progress(task_description: str, messages: Optional[List[str]] = None):
             time.sleep(1)  # Simulate loading time
             yield
         progress.stop()
+
