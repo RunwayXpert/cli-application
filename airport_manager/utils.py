@@ -1,24 +1,14 @@
 import time
 import random
-import json
 from typing import List, Optional
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
-
+from airport_manager.data.Facts import FACTS
 
 console = Console()
-
-# Load facts from JSON file
-def load_facts_from_json(file_path: str) -> List[str]:
-    with open(file_path, "r") as file:
-        data = json.load(file)
-        return data.get("facts", [])
-
-FACTS = load_facts_from_json("airport_manager/data/facts.json")
-
 
 def clear_console():
     console.print("\033c", end="")

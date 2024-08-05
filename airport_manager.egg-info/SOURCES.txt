@@ -15,6 +15,8 @@ airport_manager/auth/__init__.py
 airport_manager/auth/main_menu.py
 airport_manager/auth/menu.py
 airport_manager/auth/routes.py
+airport_manager/data/Facts.py
+airport_manager/data/__init__.py
 airport_manager/database/__init__.py
 airport_manager/database/main_menu.py
 airport_manager/database/menu.py

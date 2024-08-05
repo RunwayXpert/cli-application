@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='airport-manager',
-    version='0.2.24',  # Updated version number
+    version='0.2.25',  # Updated version number
     packages=find_packages(),
     install_requires=[
         'requests',

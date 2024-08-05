@@ -1,5 +1,4 @@
-{
-    "facts": [
+FACTS = [
         "Did you know? The server used for this was made 5 times, each time using new technologies like Supabase, Fly.io, Flask, and FastAPI.",
         "The first CLI beta shown was made in 3 hours for beta testing by Shubh.",
         "The Airport Manager project is a testament to continuous learning and adapting to new technologies.",
@@ -17,4 +16,3 @@
         "Did you know? The entire project is documented to help new developers get started quickly.",
         "The system's architecture is designed to scale efficiently as user demand grows."
     ]
-}
