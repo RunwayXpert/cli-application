@@ -18,11 +18,11 @@ def get_data_from_api(endpoint):
     
     for _ in progress_gen:
         response = requests.get(url, headers=headers)
-        if response.status_code in [400, 401, 403, 404, 500]:  # Specify conditions to break the loop
+        if response.status_code in [200, 400, 401, 403, 404, 500]:    # Specify conditions to break the loop
             break
     
     clear_console()
-    
+
     if response.status_code == 200:
         return response.json()
     else:
