@@ -17,7 +17,7 @@ def load_facts_from_json(file_path: str) -> List[str]:
         data = json.load(file)
         return data.get("facts", [])
 
-FACTS = load_facts_from_json("facts.json")
+FACTS = load_facts_from_json("data/facts.json")
 
 
 def clear_console():
