@@ -1,6 +1,7 @@
 import time
 import random
 from typing import List, Optional
+from rich import box
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.console import Console
 from rich.panel import Panel
@@ -35,16 +36,15 @@ def print_success_panel(status, timestamp):
     console.print(Panel(Text(panel_title, justify="center"), style=panel_style))
 
 
-def print_data(data):
+def print_data(data, title, style):
     if data:
-        status = data.get("status", "unsuccess")
-        timestamp = data.get("timestamp", "")
-
-        table = Table(title="Server Data")
-        table.add_column("Key")
-        table.add_column("Value")
+        table = Table(box=box.MINIMAL)
+        table.add_column("Field", style="bold magenta")
+        table.add_column("Value", style="bold cyan")
 
         for key, value in data.items():
+            if key in ["status", "timestamp"]:
+                continue  # Skip status and timestamp fields
             if key == "area" and isinstance(value, dict):
                 for area_key, area_value in value.items():
                     table.add_row(area_key, str(area_value))
@@ -56,21 +56,17 @@ def print_data(data):
                     for coord_key, coord_value in coord.items():
                         if isinstance(coord_value, dict):
                             for nested_key, nested_value in coord_value.items():
-                                coord_table.add_row(
-                                    nested_key, str(nested_value))
+                                coord_table.add_row(nested_key, str(nested_value))
                         else:
                             coord_table.add_row(coord_key, str(coord_value))
                     table.add_row(f"Coordinate {idx+1}", coord_table)
             else:
                 table.add_row(key, str(value))
 
-        panel_style = "green" if status == "success" else "red"
-        panel_title = f"Status: {status}"
-        if timestamp:
-            panel_title += f" | Timestamp: {timestamp}"
-        console.print(Panel(table, title=panel_title, style=panel_style))
+        console.print(Panel(table, title=title, style=style))
     else:
         console.print("[red]No data to display.[/red]")
+
 
 def show_progress(task_description: str, messages: Optional[List[str]] = None):
     if messages is None:
