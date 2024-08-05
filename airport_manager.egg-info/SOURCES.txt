@@ -29,5 +29,6 @@ airport_manager/flight_tracker_v1/menu.py
 airport_manager/flight_tracker_v1/routes.py
 airport_manager/flight_tracker_v1/utils.py
 animations/__init__.py
+animations/banner.py
 animations/end_animation.py
 animations/welcome_animation.py
