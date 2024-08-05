@@ -9,7 +9,7 @@ from airport_manager.database.routes import check_token_validity
 from airport_manager.main_menu import main_menu
 from airport_manager.auth.main_menu import auth_menu
 from airport_manager.database.main_menu import database_menu
-from airport_manager.fr24.main_menu import fr24_menu
+from airport_manager.flight_tracker_v1.main_menu import flight_tracker_v1_menu
 from airport_manager.fa24.main_menu import fa24_menu
 from airport_manager.utils import clear_console
 
@@ -39,7 +39,7 @@ def cli():
 cli.add_command(main_menu)
 cli.add_command(auth_menu)
 cli.add_command(database_menu)
-cli.add_command(fr24_menu)
+cli.add_command(flight_tracker_v1_menu)
 cli.add_command(fa24_menu)
 
 if __name__ == "__main__":
