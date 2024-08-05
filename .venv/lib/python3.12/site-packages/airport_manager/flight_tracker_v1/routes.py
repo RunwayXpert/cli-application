@@ -22,7 +22,7 @@ def get_data_from_api(endpoint):
             break
     
     clear_console()
-
+    
     if response.status_code == 200:
         return response.json()
     else:

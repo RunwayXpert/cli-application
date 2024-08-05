@@ -1,5 +1,6 @@
 import time
 import random
+import json
 from typing import List, Optional
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.console import Console
@@ -10,14 +11,13 @@ from rich.text import Text
 
 console = Console()
 
+# Load facts from JSON file
+def load_facts_from_json(file_path: str) -> List[str]:
+    with open(file_path, "r") as file:
+        data = json.load(file)
+        return data.get("facts", [])
 
-FACTS = [
-    "Did you know? Airport Manager supports real-time flight tracking.",
-    "Tip: You can view weather stats by entering the airport code.",
-    "Fun fact: The Airport Manager was built with FastAPI and Rich!",
-    "Pro tip: Use the API token for authenticated requests.",
-    "Did you know? You can track flights by their tail number."
-]
+FACTS = load_facts_from_json("facts.json")
 
 
 def clear_console():
@@ -79,6 +79,7 @@ def print_data(data):
         console.print(Panel(table, title=panel_title, style=panel_style))
     else:
         console.print("[red]No data to display.[/red]")
+
 
 def show_progress(task_description: str, messages: Optional[List[str]] = None):
     if messages is None:
