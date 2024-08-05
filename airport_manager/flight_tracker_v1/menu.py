@@ -6,7 +6,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich import box
 from airport_manager.flight_tracker_v1.routes import get_data_from_api
-from airport_manager.flight_tracker_v1.utils import print_flight_tracker_data, print_weather_data, print_flight_data
+from airport_manager.flight_tracker_v1.utils import print_flight_tracker_data, print_weather_data, print_flight_info, print_flight_data
 from airport_manager.utils import handle_response, print_success_panel, clear_console
 
 console = Console()
@@ -61,25 +61,25 @@ def handle_flight_tracker_v1_menu(choice):
         airport_code = Prompt.ask("Enter airport code for departures", default="BOM")
         data = get_data_from_api(f"departures/{airport_code}")
         if handle_response(data):
-            print_flight_tracker_data(data)
+            print_flight_data(data, "departures")
             print_success_panel(data.get("status"), data.get("timestamp"))
     elif choice == "4":
         airport_code = Prompt.ask("Enter airport code for arrivals", default="BOM")
         data = get_data_from_api(f"arrivals/{airport_code}")
         if handle_response(data):
-            print_flight_tracker_data(data)
+            print_flight_data(data, "arrivals")
             print_success_panel(data.get("status"), data.get("timestamp"))
     elif choice == "5":
         airport_code = Prompt.ask("Enter airport code for ground operations", default="BOM")
         data = get_data_from_api(f"ground/{airport_code}")
         if handle_response(data):
-            print_flight_tracker_data(data)
+            print_flight_data(data, "ground")
             print_success_panel(data.get("status"), data.get("timestamp"))
     elif choice == "6":
         tail_number = Prompt.ask("Enter tail number for flight information", default="VT-IBH")
         data = get_data_from_api(f"flight/{tail_number}")
         if handle_response(data):
-            print_flight_data(data)
+            print_flight_info(data)
             print_success_panel(data.get("status"), data.get("timestamp"))
     elif choice == "7":
         return

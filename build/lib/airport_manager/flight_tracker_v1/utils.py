@@ -3,6 +3,10 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 from rich import box
+from datetime import datetime
+from rich.prompt import Prompt
+from airport_manager.utils import clear_console
+
 
 console = Console()
 
@@ -207,43 +211,126 @@ def format_status(status):
         return Text(status, style="bold red")
 
 
-def print_flight_data(data):
-    status = data.get("status", "unsuccess")
-    timestamp = data.get("timestamp", "")
-    
-    if status != 'success':
-        error_message = f"Status: {status} | Message: {data.get('message', '')} | Timestamp: {timestamp}"
-        console.print(Panel(Text(error_message, justify="center"), style="red"))
-        return
-    
+def print_flight_info(data):
     flights = data.get("flights", [])
     
-    table = Table(box=box.MINIMAL)
-    table.add_column("Date", style="bold magenta")
-    table.add_column("From", style="bold cyan")
-    table.add_column("To", style="bold cyan")
-    table.add_column("Flight Number", style="bold green")
-    # table.add_column("Flight ID", style="orange_red1")
-    table.add_column("Duration", style="bold yellow")
-    table.add_column("STD", style="bold blue")
-    table.add_column("ATD", style="bold blue")
-    table.add_column("STA", style="bold blue")
-    table.add_column("Status", style="bold red")
+    if not flights:
+        console.print(Panel("No flight data available.", style="bold red"))
+        return
     
-    for flight in flights:
-        table.add_row(
-            flight.get("date", "N/A"),
-            flight.get("from", "N/A"),
-            flight.get("to", "N/A"),
-            flight.get("flight_number", "N/A"),
-            # flight.get("data_flight", "N/A"),
-            flight.get("duration", "N/A"),
-            flight.get("std", "N/A"),
-            flight.get("atd", "N/A"),
-            flight.get("sta", "N/A"),
-            format_status(flight.get("status", "N/A"))
+    def create_flight_info_table(flights_batch, start_index):
+        table = Table(box=box.MINIMAL)
+        table.add_column("Date", style="bold magenta")
+        table.add_column("From", style="bold cyan")
+        table.add_column("To", style="bold cyan")
+        table.add_column("Flight Number", style="bold green")
+        table.add_column("Flight ID", style="orange_red1")
+        table.add_column("Duration", style="bold yellow")
+        table.add_column("STD", style="bold blue")
+        table.add_column("ATD", style="bold blue")
+        table.add_column("STA", style="bold blue")
+        table.add_column("Status", style="bold red")
+        
+        for i, flight in enumerate(flights_batch, start=start_index):
+            table.add_row(
+                flight.get("date", "N/A"),
+                flight.get("from", "N/A"),
+                flight.get("to", "N/A"),
+                flight.get("flight_number", "N/A"),
+                flight.get("data_flight", "N/A"),
+                flight.get("duration", "N/A"),
+                flight.get("std", "N/A"),
+                flight.get("atd", "N/A"),
+                flight.get("sta", "N/A"),
+                format_status(flight.get("status", "N/A"))
+            )
+        
+        return table
 
-        )
-    
-    console.print(Panel(table, title="Flight Data", title_align="left", style="bold green"))
+    batch_size = 10
+    start_index = 0
+    while start_index < len(flights):
+        batch = flights[start_index:start_index + batch_size]
+        table = create_flight_info_table(batch, start_index + 1)
+        console.print(Panel(table, title=f"Flight Data (Showing {start_index + 1}-{min(start_index + batch_size, len(flights))} of {len(flights)})", title_align="left", style="bold green"))
+        start_index += batch_size
+        if start_index < len(flights):
+            choice = Prompt.ask("Press Enter to continue or type 'q' to quit", default="")
+            clear_console()
+            if choice.lower() == 'q':
+                break
+
+
+def print_flight_data(data, data_type: str):
+    flights = data.get(data_type, [])
+    total = data.get("total", 0)
+
+    if not flights:
+        console.print(Panel("No flight data available.", style="bold red"))
+        return
+
+    def create_flight_table(flights_batch, start_index):
+        table = Table(box=box.MINIMAL)
+        table.add_column("Flight Number", style="bold green")
+        table.add_column("Flight ID", style="bold bright_yellow")
+
+        if data_type == "departures":
+            table.add_column("To", style="bold cyan")
+        elif data_type == "arrivals":
+            table.add_column("From", style="bold cyan")
+
+        table.add_column("Scheduled Departure", style="bold blue")
+        table.add_column("Scheduled Arrival", style="bold blue")
+        if data_type != "ground":
+            table.add_column("Status", style="bold red")
+        table.add_column("Aircraft Model", style="bold yellow")
+        table.add_column("Registration", style="bold magenta")
+        
+        for i, flight_info in enumerate(flights_batch, start=start_index):
+            flight = flight_info.get("flight", {})
+            ident = flight.get("identification", {})
+            status = flight.get("status", {})
+            aircraft = flight.get("aircraft", {})
+            origin_info = flight.get("airport", {}).get("origin", {}).get("code", {})
+            destination_info = flight.get("airport", {}).get("destination", {}).get("code", {})
+
+            row_data = [
+                ident.get("number", {}).get("default", "N/A"),
+                str(ident.get("id", "N/A")),
+            ]
+
+            if data_type == "departures":
+                row_data.append(f'{destination_info.get("iata", "N/A")}')
+            elif data_type == "arrivals":
+                row_data.append(f'{origin_info.get("iata", "N/A")}')
+
+            row_data.extend([
+                datetime.utcfromtimestamp(flight.get("time", {}).get("scheduled", {}).get("departure", 0)).strftime('%Y-%m-%d %H:%M:%S'),
+                datetime.utcfromtimestamp(flight.get("time", {}).get("scheduled", {}).get("arrival", 0)).strftime('%Y-%m-%d %H:%M:%S'),
+            ])
+
+            if data_type != "ground":
+                row_data.append(format_status(status.get("text", "N/A")))
+
+            row_data.extend([
+                aircraft.get("model", {}).get("text", "N/A"),
+                aircraft.get("registration", "N/A"),
+            ])
+            
+            table.add_row(*row_data)
+
+        return table
+
+    batch_size = 10
+    start_index = 0
+    while start_index < len(flights):
+        batch = flights[start_index:start_index + batch_size]
+        table = create_flight_table(batch, start_index + 1)
+        console.print(Panel(table, title=f"{data_type.capitalize()} Data (Showing {start_index + 1}-{min(start_index + batch_size, len(flights))} of {total})", title_align="left", style="bold green"))
+        start_index += batch_size
+        if start_index < len(flights):
+            choice = Prompt.ask("Press Enter to continue or type 'q' to quit", default="")
+            clear_console()
+            if choice.lower() == 'q':
+                break
 
