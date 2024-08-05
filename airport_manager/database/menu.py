@@ -1,8 +1,9 @@
+import sys
+import ast
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
-import sys
 from rich import box
 from rich.prompt import Prompt
 from airport_manager.database.routes import get_airport_coords, find_area, find_areas_for_coordinates
@@ -32,47 +33,63 @@ def display_database_menu(console: Console):
                   title_align="left", style="blue"))
 
 
-
 def handle_database_menu(choice, raw):
     clear_console()
     data = None
     token = get_token()  # Get the API token
+    title = ""
+    style = ""
+
     if choice == "1":
         console.print(Panel("Retrieve the coordinates for a specified airport code.", style="green"))
-        airport_code = Prompt.ask("Enter airport code", default="BOM")
-        data = get_airport_coords(airport_code, token)
-        title = "Airport Coordinates"
-        style = "bold green"
+        while True:
+            airport_code = Prompt.ask("Enter airport code", default="BOM")
+            data = get_airport_coords(airport_code, token)
+            if handle_response(data):
+                title = "Airport Coordinates"
+                style = "bold green"
+                break
+            else:
+                console.print("[red]Invalid airport code. Please try again.[/red]")
+
     elif choice == "2":
-        console.print(Panel("Find the area for given latitude and longitude coordinates.", style="green"))
-        lat = Prompt.ask("Enter latitude", default="19.0952415")
-        lon = Prompt.ask("Enter longitude", default="72.8713955")
-        try:
-            lat = float(lat)
-            lon = float(lon)
-            data = find_area(lat, lon, token)
-            title = "Area Information"
-            style = "bold cyan"
-        except ValueError:
-            console.print("[red]Invalid input. Please enter valid numbers for latitude and longitude.[/red]")
-            return
+        console.print(Panel("Find the area for given latitude and longitude coordinates.", style="cyan"))
+        while True:
+            lat = Prompt.ask("Enter latitude", default="19.0952415")
+            lon = Prompt.ask("Enter longitude", default="72.8713955")
+            try:
+                lat = float(lat)
+                lon = float(lon)
+                data = find_area(lat, lon, token)
+                if handle_response(data):
+                    title = "Area Information"
+                    style = "bold cyan"
+                    break
+                else:
+                    console.print("[red]Invalid coordinates. Please try again.[/red]")
+            except ValueError:
+                console.print("[red]Invalid input. Please enter valid numbers for latitude and longitude.[/red]")
+
     elif choice == "3":
-        console.print(Panel("Find areas for a list of coordinates.", style="green"))
-        coords = None
-        while coords is None:
+        console.print(Panel("Find areas for a list of coordinates.", style="magenta"))
+        while True:
             try:
                 coords_input = Prompt.ask("Enter coordinates as a list of dicts (e.g., [{'lat': 1.0, 'lon': 2.0}])", default="[{'lat': 19.0952415, 'lon': 72.8713955}]")
-                coords = eval(coords_input)
-                if not isinstance(coords, list) or not all(isinstance(item, dict) for item in coords):
+                coords = ast.literal_eval(coords_input)
+                if isinstance(coords, list) and all(isinstance(item, dict) for item in coords):
+                    data = find_areas_for_coordinates(coords, token)
+                    if handle_response(data):
+                        title = "Areas for Coordinates"
+                        style = "bold magenta"
+                        break
+                    else:
+                        console.print("[red]Invalid coordinates. Please try again.[/red]")
+                else:
                     raise ValueError
-                title = "Areas for Coordinates"
-                style = "bold magenta"
             except (SyntaxError, ValueError):
                 console.print("[red]Invalid input for coordinates. Please enter a valid list of dicts.[/red]")
-                coords = None
-        data = find_areas_for_coordinates(coords, token)
 
-    if handle_response(data):
+    if data:
         print_data(data, title, style)
         print_success_panel(data.get("status"), data.get("timestamp"))
 
