@@ -11,6 +11,7 @@ from airport_manager.auth.main_menu import auth_menu
 from airport_manager.database.main_menu import database_menu
 from airport_manager.fr24.main_menu import fr24_menu
 from airport_manager.fa24.main_menu import fa24_menu
+from airport_manager.utils import clear_console
 
 console = Console()
 
@@ -30,7 +31,7 @@ def validate_token():
 
 @click.group()
 def cli():
-    console.clear()
+    clear_console()
     welcome_animation()
     validate_token()
 

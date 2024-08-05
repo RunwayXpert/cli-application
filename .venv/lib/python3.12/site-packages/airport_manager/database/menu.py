@@ -8,6 +8,7 @@ from rich.prompt import Prompt
 from airport_manager.database.routes import get_airport_coords, find_area, find_areas_for_coordinates
 from airport_manager.utils import print_data
 from airport_manager.config import get_token
+from airport_manager.utils import clear_console
 
 console = Console()
 
@@ -32,7 +33,7 @@ def display_database_menu(console: Console):
 
 
 def handle_database_menu(choice, raw):
-    console.clear()
+    clear_console()
     data = None
     token = get_token()  # Get the API token
     if choice == "1":
@@ -70,7 +71,7 @@ def handle_database_menu(choice, raw):
                 coords = None
         data = find_areas_for_coordinates(coords, token)
 
-    console.clear()
+    clear_console()
     print_data(data)
 
     if raw:
@@ -82,7 +83,7 @@ def handle_database_menu(choice, raw):
 
 if __name__ == "__main__":
     while True:
-        console.clear()
+        clear_console()
         display_database_menu(console)
         choice = Prompt.ask(
             "Select an option [1/2/3/4/5]", choices=["1", "2", "3", "4", "5"])

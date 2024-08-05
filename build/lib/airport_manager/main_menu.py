@@ -7,19 +7,19 @@ from rich.table import Table
 from rich import box
 from airport_manager.auth.main_menu import auth_menu
 from airport_manager.database.main_menu import database_menu
-from airport_manager.fr24.main_menu import fr24_menu
+from airport_manager.flight_tracker_v1.main_menu import flight_tracker_v1_menu
 from airport_manager.fa24.main_menu import fa24_menu
 from animations.end_animation import end_animation
+from airport_manager.utils import clear_console
 
 console = Console()
-
 
 def display_main_menu(console: Console):
     header = Text("Main Menu", justify="center", style="bold blue")
     menu_options = [
         ("[A] Auth Menu", "A"),
         ("[D] Database Menu", "D"),
-        ("[R] FR24 Menu", "R"),
+        ("[R] Flight Tracker v1 Menu", "R"),
         ("[F] FA24 Menu", "F"),
         ("[5] Exit", "5")
     ]
@@ -29,17 +29,16 @@ def display_main_menu(console: Console):
     console.print(Panel(table, title="Options",
                   title_align="left", style="blue"))
 
-
 @click.command()
 @click.pass_context
 def main_menu(ctx):
     while True:
-        console.clear()
+        clear_console()
         display_main_menu(console)
         choice = Prompt.ask("Select an option", choices=[
                             "A", "D", "R", "F", "5"], default="A")
         if choice == "5":
-            console.clear()
+            clear_console()
             end_animation()
             break
         if choice == "A":
@@ -49,4 +48,4 @@ def main_menu(ctx):
         elif choice == "F":
             ctx.invoke(fa24_menu)
         elif choice == "R":
-            ctx.invoke(fr24_menu)
+            ctx.invoke(flight_tracker_v1_menu)
